@@ -1,0 +1,14 @@
+type User {
+ _id: String!
+ type: String!
+ nickName: String!
+ name: String!
+ passWord: String!
+ email: String!
+ checkCode: String!
+ mobile: String!
+ address: String!
+ detailAddress: String!
+ zoneCode: String!
+ birth: String!
+}

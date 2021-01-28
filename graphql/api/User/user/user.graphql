@@ -1,0 +1,33 @@
+type Query {
+ getAllUser: [User!]!
+ getDetailUser(id: String!): User!
+ getUserTotalPage(searchValue: String!, limit: Int!): Int!
+ getAllUserlength: Int!
+}
+
+type Mutation {
+ loginUser(email: String!, passWord: String!): Boolean!
+ createUser(
+  name: String!
+  passWord: String!
+  email: String!
+  mobile: String!
+  address: String!
+  detailAddress: String!
+  zoneCode: String!
+  birth: String
+  nickName: String!
+ ): Boolean!
+ updateUser(
+  id: String!
+  name: String!
+  email: String!
+  mobile: String!
+  address: String!
+  detailAddress: String!
+  zoneCode: String!
+  passWord: String!
+  birth: String!
+ ): Boolean!
+ deleteUser(id: String!): Boolean!
+}
