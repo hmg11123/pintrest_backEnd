@@ -1,5 +1,6 @@
 import User from "../../../model/User";
-import { CURRENT_TIME } from "../../../../utils/commonUtils";
+import nodemailer from "nodemailer";
+import smtpPool from "nodemailer-smtp-pool";
 import crypto from "crypto";
 
 export default {
@@ -58,6 +59,47 @@ export default {
   },
  },
  Mutation: {
+  updatePassWord: async (_, args) => {
+   const { email, passWord } = args;
+   try {
+    console.log(passWord);
+    let cilper = crypto.createHash("sha512");
+
+    cilper.update(passWord);
+    const encPassword = cilper.digest("hex");
+    const result = await User.updateOne(
+     { email },
+     { $set: { passWord: encPassword } }
+    );
+
+    return true;
+   } catch (e) {
+    console.log(e);
+    return false;
+   }
+  },
+  codeCheck: async (_, args) => {
+   const { email, code } = args;
+   try {
+    const result = await User.findOne({ email, checkCode: code });
+    console.log(result);
+    if (result.checkCode === code) {
+     await User.updateOne(
+      { email },
+      {
+       $set: { checkCode: `-` },
+      }
+     );
+     return true;
+    } else {
+     return false;
+    }
+   } catch (e) {
+    console.log(e);
+    return false;
+   }
+  },
+
   getUser: async (_, args) => {
    const { email, passWord } = args;
    try {
@@ -97,6 +139,64 @@ export default {
     return false;
    }
   },
+
+  checkCodeUser: async (_, args) => {
+   const { email } = args;
+
+   try {
+    const randomCode = [`0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`];
+    const code =
+     randomCode[Math.floor(Math.random() * 10)] +
+     randomCode[Math.floor(Math.random() * 10)] +
+     randomCode[Math.floor(Math.random() * 10)] +
+     randomCode[Math.floor(Math.random() * 10)] +
+     randomCode[Math.floor(Math.random() * 10)];
+
+    const smtpTransport = nodemailer.createTransport(
+     smtpPool({
+      service: "Gmail",
+      host: "localhost",
+      port: "465",
+      tls: {
+       rejectUnauthorize: false,
+      },
+
+      auth: {
+       user: "4leaf.hmg@gmail.com",
+       pass: "zmaeyzaijjqbwajm",
+      },
+      maxConnections: 5,
+      maxMessages: 10,
+     })
+    );
+
+    const mailOpt = {
+     from: "4leaf.hmg@gmail.com",
+     to: email,
+     subject: "🔐인증코드 전송 [www.community.com]",
+     html: `인증코드는 ${code} 입니다.`,
+    };
+
+    await smtpTransport.sendMail(mailOpt, function (err, info) {
+     if (err) {
+      console.error("Send Mail error : ", err);
+      smtpTransport.close();
+     } else {
+      console.log("Message sent : ", info);
+      smtpTransport.close();
+     }
+    });
+    const result = await User.updateOne(
+     { email },
+     { $set: { checkCode: code } }
+    );
+
+    return true;
+   } catch (e) {
+    console.log(e);
+    return false;
+   }
+  },
   createUser: async (_, args) => {
    const {
     name,
@@ -125,7 +225,7 @@ export default {
      detailAddress,
      zoneCode,
      passWord: encPassword,
-     checkCode: "",
+     checkCode: "-",
      birth,
      nickName,
     });
