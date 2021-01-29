@@ -1,5 +1,6 @@
 import User from "../../../model/User";
 import { CURRENT_TIME } from "../../../../utils/commonUtils";
+import crypto from "crypto";
 
 export default {
  Query: {
@@ -57,11 +58,40 @@ export default {
   },
  },
  Mutation: {
-  loginUser: async (_, args) => {
+  getUser: async (_, args) => {
    const { email, passWord } = args;
    try {
-    const result = await User.findOne({ email, passWord });
-    return true;
+    let cilper = crypto.createHash("sha512");
+
+    cilper.update(passWord);
+    const encPassword = cilper.digest("hex");
+    const result = await User.findOne({ email, passWord: encPassword });
+
+    return {
+     isLogin: true,
+     userData: result,
+    };
+   } catch (e) {
+    console.log(e);
+    return {
+     isLogin: false,
+     userData: {},
+    };
+   }
+  },
+
+  checkUserNickName: async (_, args) => {
+   const { nickName } = args;
+   try {
+    const result = await User.find({ nickName });
+
+    console.log("dsfssdfdsfssd", result.length);
+
+    if (result.length < 1) {
+     return true;
+    } else {
+     return false;
+    }
    } catch (e) {
     console.log(e);
     return false;
@@ -80,6 +110,12 @@ export default {
     nickName,
    } = args;
    try {
+    let cilper = crypto.createHash("sha512");
+
+    console.log(cilper);
+
+    cilper.update(passWord);
+    const encPassword = cilper.digest("hex");
     const result = await User.create({
      type: "User",
      name,
@@ -88,7 +124,7 @@ export default {
      address,
      detailAddress,
      zoneCode,
-     passWord,
+     passWord: encPassword,
      checkCode: "",
      birth,
      nickName,
@@ -109,8 +145,8 @@ export default {
     address,
     detailAddress,
     zoneCode,
-    passWord,
     birth,
+    nickName,
    } = args;
    try {
     const result = await User.updateOne(
@@ -123,8 +159,8 @@ export default {
        address,
        detailAddress,
        zoneCode,
-       passWord,
        birth,
+       nickName,
       },
      }
     );

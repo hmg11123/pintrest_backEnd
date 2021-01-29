@@ -1,3 +1,8 @@
+type LoginData {
+ isLogin: Boolean!
+ userData: User
+}
+
 type Query {
  getAllUser: [User!]!
  getDetailUser(id: String!): User!
@@ -6,17 +11,18 @@ type Query {
 }
 
 type Mutation {
- loginUser(email: String!, passWord: String!): Boolean!
+ getUser(email: String!, passWord: String!): LoginData!
+ checkUserNickName(nickName: String!): Boolean!
  createUser(
   name: String!
-  passWord: String!
   email: String!
   mobile: String!
   address: String!
   detailAddress: String!
   zoneCode: String!
-  birth: String
+  birth: String!
   nickName: String!
+  passWord: String!
  ): Boolean!
  updateUser(
   id: String!
@@ -26,8 +32,8 @@ type Mutation {
   address: String!
   detailAddress: String!
   zoneCode: String!
-  passWord: String!
   birth: String!
+  nickName: String!
  ): Boolean!
  deleteUser(id: String!): Boolean!
 }
