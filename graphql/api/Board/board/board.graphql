@@ -1,0 +1,13 @@
+type Query {
+ getAllBoard: [Board!]!
+ getOneBoard(id: String!): Board!
+}
+
+type Mutation {
+ createBoard(
+  type: String!
+  title: String!
+  imgPath: String!
+  author: String!
+ ): Boolean!
+}

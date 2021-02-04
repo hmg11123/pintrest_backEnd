@@ -2,6 +2,7 @@ type User {
  _id: String!
  type: String!
  nickName: String!
+ profileImage: String!
  name: String!
  passWord: String!
  email: String!
@@ -11,4 +12,28 @@ type User {
  detailAddress: String!
  zoneCode: String!
  birth: String!
+ follower: [String!]!
+}
+
+type Board {
+ _id: String!
+ type: String!
+ title: String!
+ imgPath: String!
+ createdAt: String!
+ good: Int!
+ hate: Int!
+ hit: Int!
+ author: String!
+ boardComment: [String!]!
+}
+
+type Comment {
+ _id: String!
+ writtenPlacer: String!
+ createdAt: String!
+ desc: String!
+ author: String!
+ good: Int!
+ hate: Int!
 }

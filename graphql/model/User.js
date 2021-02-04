@@ -12,6 +12,10 @@ const User = new Schema(
    type: String,
    require: true,
   },
+  profileImage: {
+   type: String,
+   require: true,
+  },
   passWord: {
    type: String,
    require: true,
@@ -48,6 +52,12 @@ const User = new Schema(
    type: String,
    require: true,
   },
+  follower: [
+   {
+    type: String,
+    require: true,
+   },
+  ],
  },
  {
   versionKey: false,

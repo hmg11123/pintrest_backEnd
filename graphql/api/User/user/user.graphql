@@ -8,6 +8,7 @@ type Query {
  getDetailUser(id: String!): User!
  getUserTotalPage(searchValue: String!, limit: Int!): Int!
  getAllUserlength: Int!
+ getAllFollowerlength(id: String!): Int!
 }
 
 type Mutation {
@@ -18,6 +19,7 @@ type Mutation {
  updatePassWord(email: String!, passWord: String!): Boolean!
  createUser(
   name: String!
+  profileImage: String
   email: String!
   mobile: String!
   address: String!
@@ -38,5 +40,8 @@ type Mutation {
   birth: String!
   nickName: String!
  ): Boolean!
+ updateProfileImg(id: String!, profileImage: String!): Boolean!
+ updateFollower(id: String!, userId: String!): Boolean!
+ deleteFollower(id: String!, userId: String!): Boolean!
  deleteUser(id: String!): Boolean!
 }

@@ -57,6 +57,20 @@ export default {
     return [];
    }
   },
+  getAllFollowerlength: async (_, args) => {
+   const { id } = args;
+   try {
+    const result = await User.findOne({ _id: id });
+
+    console.log(result);
+    const follwerlen = result.follower.length;
+
+    return parseInt(follwerlen);
+   } catch (e) {
+    console.log(e);
+    return [];
+   }
+  },
  },
  Mutation: {
   updatePassWord: async (_, args) => {
@@ -200,6 +214,7 @@ export default {
   createUser: async (_, args) => {
    const {
     name,
+    profileImage,
     email,
     mobile,
     address,
@@ -219,6 +234,7 @@ export default {
     const result = await User.create({
      type: "User",
      name,
+     profileImage,
      email,
      mobile,
      address,
@@ -271,12 +287,72 @@ export default {
     return false;
    }
   },
+  updateProfileImg: async (_, args) => {
+   const { id, profileImage } = args;
+   try {
+    const result = await User.updateOne(
+     { _id: id },
+     { $set: { profileImage } }
+    );
+
+    console.log(result);
+    return true;
+   } catch (e) {
+    console.log(e);
+    return false;
+   }
+  },
   deleteUser: async (_, args) => {
    const { id } = args;
    try {
     const result = await User.deleteOne({ _id: id });
 
     return true;
+   } catch (e) {
+    console.log(e);
+    return false;
+   }
+  },
+  updateFollower: async (_, args) => {
+   const { id, userId } = args;
+   try {
+    const userData = await User.findOne({ _id: id });
+
+    if (userData.follower !== userId) {
+     const result = await User.updateOne(
+      { _id: id },
+      { $push: { follower: userId } }
+     );
+     return true;
+    } else {
+     return false;
+    }
+   } catch (e) {
+    console.log(e);
+    return false;
+   }
+  },
+  deleteFollower: async (_, args) => {
+   const { id, userId } = args;
+
+   try {
+    const userData = await User.findOne({ _id: id });
+    console.log(userData.follower);
+    console.log(id);
+    console.log(userId);
+    const userFollower = userData.follower.filter(
+     (follower) => follower !== userId
+    );
+
+    if (userData.follower !== userId) {
+     const result = await User.updateOne(
+      { _id: id },
+      { $set: { follower: userFollower } }
+     );
+     return true;
+    } else {
+     return false;
+    }
    } catch (e) {
     console.log(e);
     return false;

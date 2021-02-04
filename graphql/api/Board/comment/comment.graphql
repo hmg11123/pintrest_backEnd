@@ -1,0 +1,7 @@
+type Query {
+ getComment(writtenPlacer: String!): [Comment!]!
+}
+
+type Mutation {
+ createComment(writtenPlacer: String!, desc: String!, author: String!): Boolean!
+}
