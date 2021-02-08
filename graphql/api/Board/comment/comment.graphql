@@ -4,4 +4,6 @@ type Query {
 
 type Mutation {
  createComment(writtenPlacer: String!, desc: String!, author: String!): Boolean!
+ updateComment(id: String!, desc: String!): Boolean!
+ deleteComment(id: String!): Boolean!
 }

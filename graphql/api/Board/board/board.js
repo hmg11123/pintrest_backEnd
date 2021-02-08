@@ -1,11 +1,16 @@
 import Board from "../../../model/Board";
+import User from "../../../model/User";
 import { CURRENT_TIME } from "../../../../utils/commonUtils";
+import mongoose from "mongoose";
 
 export default {
  Query: {
   getAllBoard: async (_, args) => {
    try {
-    const result = await Board.find();
+    const result = await Board.find().populate({
+     path: `author`,
+     model: User,
+    });
 
     return result;
    } catch (e) {
@@ -16,7 +21,10 @@ export default {
   getOneBoard: async (_, args) => {
    const { id } = args;
    try {
-    const result = await Board.findOne({ _id: id });
+    const result = await Board.findOne({ _id: id }).populate({
+     path: `author`,
+     model: User,
+    });
 
     return result;
    } catch (e) {
@@ -30,7 +38,7 @@ export default {
    const { type, title, imgPath, author } = args;
    const current = await CURRENT_TIME();
    try {
-    console.log(type, title, imgPath, author);
+    const authorId = mongoose.Types.ObjectId(author);
     const result = await Board.create({
      type,
      title,
@@ -39,7 +47,7 @@ export default {
      good: 0,
      hate: 0,
      hit: 0,
-     author,
+     author: authorId,
     });
     console.log(result);
     return true;

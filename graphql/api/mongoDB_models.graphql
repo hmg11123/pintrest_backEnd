@@ -24,7 +24,7 @@ type Board {
  good: Int!
  hate: Int!
  hit: Int!
- author: String!
+ author: User!
  boardComment: [String!]!
 }
 
@@ -33,7 +33,7 @@ type Comment {
  writtenPlacer: String!
  createdAt: String!
  desc: String!
- author: String!
+ author: User!
  good: Int!
  hate: Int!
 }
